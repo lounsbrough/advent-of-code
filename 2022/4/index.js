@@ -1,6 +1,7 @@
 import input from './input';
 
 const inputLines = input.split('\n').filter(Boolean);
+
 const assignmentPairs = inputLines
   .map((inputLine) => inputLine.split(',')
     .map((assignmentPair) => assignmentPair.split('-').map((n) => parseInt(n, 10))));
