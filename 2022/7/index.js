@@ -1,6 +1,6 @@
 import input from './input';
 
-const inputLines = input.split('\n').filter((o) => o);
+const inputLines = input.split('\n').filter(Boolean);
 
 let currentDirectory = '/';
 const directorySizes = {};
