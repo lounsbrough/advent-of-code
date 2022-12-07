@@ -30,7 +30,7 @@ const sumOfRepeatedPriorities = allRucksacks
   .map(getLetterPriority)
   .reduce((total, current) => total + current, 0);
 
-const sumOfGroupPrioirities = groupsOfThreeRucksacks
+const sumOfGroupPriorities = groupsOfThreeRucksacks
   .map(getRepeatedItemInRucksacks)
   .map(getLetterPriority)
   .reduce((total, current) => total + current, 0);
@@ -38,6 +38,6 @@ const sumOfGroupPrioirities = groupsOfThreeRucksacks
 console.log({
   solution: {
     part1: { sumOfRepeatedPriorities },
-    part2: { sumOfGroupPrioirities },
+    part2: { sumOfGroupPriorities },
   },
 });
