@@ -12,25 +12,42 @@
 </head>
 
 <body>
-  <h1>Elf Forest Heights
-  </h1>
-  <div id="treeHeightChart" width="100vw"></div>
+  <div style="display: flex">
+    <div style="width: 50%">
+      <h1 style="text-align: center">Elf Forest Heights</h1>
+      <div width="50%" style="display: flex; align-items: center; flex-direction: column">
+        <h3 id="treeHeightLoading">Loading...</h3>
+        <div id="treeHeightChart"></div>
+      </div>
+    </div>
+    <div style="width: 50%">
+      <h1 style="text-align: center">Elf Forest Scenic Scores</h1>
+      <div width="50%" style="display: flex; align-items: center; flex-direction: column">
+        <h3 id="scenicScoreLoading">Loading...</h3>
+        <div id="scenicScoreChart"></div>
+      </div>
+    </div>
+  </div>
+
   <script>
     (async () => {
       const treeHeightChart = d3.select("#treeHeightChart");
       const treeHeightBarChart = d3.x3d.chart.barChartMultiSeries();
       treeHeightChart.datum(treeHeightData).call(treeHeightBarChart);
+      setTimeout(() => {
+        document.querySelector('#treeHeightLoading').remove();
+      }, 1000);
     })();
   </script>
 
-  <h1>Elf Forest Scenic Scores
-  </h1>
-  <div id="scenicScoreChart" width="100vw"></div>
   <script>
     (async () => {
       const scenicScoreChart = d3.select("#scenicScoreChart");
       const scenicScoreBarChart = d3.x3d.chart.barChartMultiSeries();
       scenicScoreChart.datum(scenicScoreData).call(scenicScoreBarChart);
+      setTimeout(() => {
+        document.querySelector('#scenicScoreLoading').remove();
+      }, 1000);
     })();
   </script>
 </body>
