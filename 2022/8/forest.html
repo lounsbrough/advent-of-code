@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Elf Forest</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://x3dom.org/release/x3dom.js"></script>
+  <link rel="stylesheet" href="https://x3dom.org/release/x3dom.css" />
+  <script src="https://raw.githack.com/jamesleesaunders/d3-x3d/master/dist/d3-x3d.js"></script>
+  <script src="./treeHeightData.js"></script>
+  <script src="./scenicScoreData.js"></script>
+</head>
+
+<body>
+  <h1>Elf Forest Heights
+  </h1>
+  <div id="treeHeightChart" width="100vw"></div>
+  <script>
+    (async () => {
+      const treeHeightChart = d3.select("#treeHeightChart");
+      const treeHeightBarChart = d3.x3d.chart.barChartMultiSeries();
+      treeHeightChart.datum(treeHeightData).call(treeHeightBarChart);
+    })();
+  </script>
+
+  <h1>Elf Forest Scenic Scores
+  </h1>
+  <div id="scenicScoreChart" width="100vw"></div>
+  <script>
+    (async () => {
+      const scenicScoreChart = d3.select("#scenicScoreChart");
+      const scenicScoreBarChart = d3.x3d.chart.barChartMultiSeries();
+      scenicScoreChart.datum(scenicScoreData).call(scenicScoreBarChart);
+    })();
+  </script>
+</body>
+
+</html>

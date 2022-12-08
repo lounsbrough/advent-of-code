@@ -1,4 +1,9 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import input from './input';
+
+const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
 
 const inputLines = input.split('\n').filter(Boolean);
 
@@ -39,20 +44,37 @@ const getScenicScoreForTree = (i, j) => [NORTH, SOUTH, EAST, WEST]
   }).reduce((total, current) => total * current, 1);
 
 let treesVisibleFromOutsideCount = 0;
-let highestScenicScore = 0;
+const scenicScores = Array.from({ length: gridHeight })
+  .map(() => Array.from({ length: gridWidth }));
 for (let i = 0; i < gridHeight; i += 1) {
   for (let j = 0; j < gridWidth; j += 1) {
     const isVisible = isTreeVisibleFromOutside(i, j);
     if (isVisible) {
       treesVisibleFromOutsideCount += 1;
     }
-    highestScenicScore = Math.max(highestScenicScore, getScenicScoreForTree(i, j));
+    scenicScores[i][j] = getScenicScoreForTree(i, j);
   }
 }
 
+const getChartData = (gridData) => gridData.map((row, i1) => ({
+  key: i1,
+  values: row.map((score, i2) => ({
+    key: i2,
+    value: score,
+  })),
+}));
+
+fs.writeFileSync(`${currentDirectory}/treeHeightData.js`, `var treeHeightData = ${JSON.stringify(getChartData(grid))};`);
+fs.writeFileSync(`${currentDirectory}/scenicScoreData.js`, `var scenicScoreData = ${JSON.stringify(getChartData(scenicScores))};`);
+
+console.log(currentDirectory);
+
 console.log({
+  extraData: {
+    charts: `open file://${currentDirectory}/forest.html`,
+  },
   solution: {
     part1: { treesVisibleFromOutsideCount },
-    part2: { highestScenicScore },
+    part2: { highestScenicScore: Math.max(...scenicScores.map((s) => Math.max(...s))) },
   },
 });
