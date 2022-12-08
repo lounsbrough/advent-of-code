@@ -48,15 +48,15 @@ moveCommands.forEach(({ count, from, to }) => {
   moveContainersToNewStack(crateMover9001FinalStacks, count, from, to, true);
 });
 
+const getTopStackLetterCode = (stacks) => Object.values(stacks).map((stack) => stack.slice(-1)).join('');
+
 console.log({
   extraData: {
     crateMover9000FinalStacks: JSON.stringify(crateMover9000FinalStacks),
     crateMover9001FinalStacks: JSON.stringify(crateMover9001FinalStacks),
   },
   solution: {
-    part1: Object.values(crateMover9000FinalStacks)
-      .map((stack) => stack.slice(-1)).join(''),
-    part2: Object.values(crateMover9001FinalStacks)
-      .map((stack) => stack.slice(-1)).join(''),
+    part1: getTopStackLetterCode(crateMover9000FinalStacks),
+    part2: getTopStackLetterCode(crateMover9001FinalStacks),
   },
 });
