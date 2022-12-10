@@ -5,16 +5,16 @@ const inputLines = input.split('\n').filter(Boolean);
 const isInRange = (x, [min, max]) => x >= min && x <= max;
 
 const outputToCrt = () => {
-    if (currentCycle % 40 === 0) {
+    const currentPixel = currentCycle % 40;
+
+    if (currentPixel === 0) {
         crtLines.push([]);
     }
 
     const spriteBounds = [currentSpritePosition - 1, currentSpritePosition + 1]
         .map((bound) => Math.max(0, Math.min(39, bound)));
 
-    const doesSpriteOverlap = isInRange(currentCycle % 40, spriteBounds)
-
-    crtLines.at(-1).push(doesSpriteOverlap ? '#' : '.');
+    crtLines.at(-1).push(isInRange(currentPixel, spriteBounds) ? '#' : '.');
 };
 
 const processCycle = () => {
