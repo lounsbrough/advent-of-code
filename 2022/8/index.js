@@ -64,8 +64,8 @@ const getChartData = (gridData) => gridData.map((row, i1) => ({
   })),
 }));
 
-fs.writeFileSync(`${currentDirectory}/treeHeightData.js`, `var treeHeightData = ${JSON.stringify(getChartData(grid)).replaceAll('"', '')};`);
-fs.writeFileSync(`${currentDirectory}/scenicScoreData.js`, `var scenicScoreData = ${JSON.stringify(getChartData(scenicScores)).replaceAll('"', '')};`);
+fs.writeFileSync(`${currentDirectory}/chartData/treeHeightData.js`, `var treeHeightData = ${JSON.stringify(getChartData(grid)).replaceAll('"', '')};`);
+fs.writeFileSync(`${currentDirectory}/chartData/scenicScoreData.js`, `var scenicScoreData = ${JSON.stringify(getChartData(scenicScores)).replaceAll('"', '')};`);
 
 console.log(currentDirectory);
 
