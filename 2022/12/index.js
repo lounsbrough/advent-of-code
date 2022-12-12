@@ -91,23 +91,8 @@ const getNextBranches = (branchIndex) => {
   pathBranches.push(...newBranches);
 };
 
-pathBranches = [{ steps: [startPosition] }];
-newPathsFound = true;
-pathsThatReachedEnd = [];
-visitedPositions = [];
-while (newPathsFound) {
-  currentPathBranches = [...pathBranches];
-  pathBranches = [];
-  newPathsFound = false;
-  currentPathBranches.forEach((_, branchIndex) => getNextBranches(branchIndex));
-}
-
-const minimumStepsToEndFromS = pathsThatReachedEnd
-  .sort((a, b) => a.steps.length - b.steps.length)[0].steps.length - 1;
-
-let minimumStepsToEndFromAnyA = Infinity;
-aPositions.forEach((aPosition) => {
-  pathBranches = [{ steps: [aPosition] }];
+const getShortestPathFromStartingPoint = (startingPoint) => {
+  pathBranches = [{ steps: [startingPoint] }];
   newPathsFound = true;
   pathsThatReachedEnd = [];
   visitedPositions = [];
@@ -117,8 +102,15 @@ aPositions.forEach((aPosition) => {
     newPathsFound = false;
     currentPathBranches.forEach((_, branchIndex) => getNextBranches(branchIndex));
   }
-  const shortestPathToEndFromA = pathsThatReachedEnd
-    .sort((a, b) => a.steps.length - b.steps.length)[0];
+
+  return pathsThatReachedEnd.sort((a, b) => a.steps.length - b.steps.length)[0];
+};
+
+const minimumStepsToEndFromS = getShortestPathFromStartingPoint(startPosition).steps.length - 1;
+
+let minimumStepsToEndFromAnyA = Infinity;
+aPositions.forEach((aPosition) => {
+  const shortestPathToEndFromA = getShortestPathFromStartingPoint(aPosition);
 
   if (shortestPathToEndFromA) {
     minimumStepsToEndFromAnyA = Math.min(
