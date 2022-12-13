@@ -4,26 +4,24 @@ import input from './input';
 const packetPairs = input.split('\n\n')
   .map((inputLinePair) => inputLinePair.split('\n').filter(Boolean).map(JSON.parse));
 
-packetPairs.forEach((packetPair) => console.log(JSON.stringify(packetPair)));
-
 const isPacketPairOutOfOrder = ([firstPacket, secondPacket]) => {
   for (let i = 0; i < Math.max(firstPacket.length, secondPacket.length); i += 1) {
     let firstPacketValue = firstPacket[i];
     let secondPacketValue = secondPacket[i];
-    // console.log(`Compare ${firstPacketValue} vs ${secondPacketValue}`);
+
+    const firstValueMissing = typeof firstPacketValue === 'undefined';
+    const secondValueMissing = typeof secondPacketValue === 'undefined';
+
+    if (firstValueMissing && !secondValueMissing) {
+      return false;
+    }
+
+    if (secondValueMissing && !firstValueMissing) {
+      return true;
+    }
+
     if (!Array.isArray(firstPacketValue) && !Array.isArray(secondPacketValue)) {
-      if (typeof firstPacketValue === 'undefined') {
-        // console.log('missing first number', firstPacketValue, secondPacketValue);
-        return false;
-      }
-
-      if (typeof secondPacketValue === 'undefined') {
-        // console.log('missing second number', firstPacketValue, secondPacketValue);
-        return true;
-      }
-
       if (firstPacketValue !== secondPacketValue) {
-        // console.log('numbers are different', firstPacketValue, secondPacketValue);
         return firstPacketValue > secondPacketValue;
       }
 
@@ -31,18 +29,18 @@ const isPacketPairOutOfOrder = ([firstPacket, secondPacket]) => {
     }
 
     if (!Array.isArray(firstPacketValue)) {
-      firstPacketValue = firstPacketValue ? [firstPacketValue] : [];
+      firstPacketValue = !firstValueMissing ? [firstPacketValue] : [];
     }
 
     if (!Array.isArray(secondPacketValue)) {
-      secondPacketValue = secondPacketValue ? [secondPacketValue] : [];
+      secondPacketValue = !secondValueMissing ? [secondPacketValue] : [];
     }
 
-    if (!firstPacketValue.length) {
+    if (!firstPacketValue.length && secondPacketValue.length) {
       return false;
     }
 
-    if (!secondPacketValue.length) {
+    if (!secondPacketValue.length && firstPacketValue.length) {
       return true;
     }
 
@@ -56,17 +54,7 @@ const isPacketPairOutOfOrder = ([firstPacket, secondPacket]) => {
 };
 
 const packetsPairsOutOfOrder = packetPairs
-  .map((packetPair) => {
-    // console.log('new packet pair');
-
-    const result = isPacketPairOutOfOrder(packetPair) || false;
-
-    // console.log('is out of order', result);
-
-    return result;
-  });
-
-console.log('packetsPairsOutOfOrder', packetsPairsOutOfOrder);
+  .map((packetPair) => isPacketPairOutOfOrder(packetPair) || false);
 
 console.log({
   solution: {
