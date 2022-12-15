@@ -100,19 +100,18 @@ const gridPart2 = clone2dArray(startingGrid);
 gridPart2.push(Array.from({ length: gridHorizontalBounds[1] + 1 + 500 }, () => '.'));
 gridPart2.push(Array.from({ length: gridHorizontalBounds[1] + 1 + 500 }, () => '#'));
 
-let sandFellIntoTheVoid;
-let sandFilledUpToOrigin;
-
 const dropGrainOfSand = (grid, part2) => {
   const sandPosition = [sandOrigin[0], sandOrigin[1]];
   let sandCameToRest = false;
+  let sandFellIntoTheVoid = false;
+  let sandFilledUpToOrigin = false;
 
-  while (!sandCameToRest && !sandFellIntoTheVoid && !sandFilledUpToOrigin) {
+  while (!sandCameToRest) {
     if (!part2 && (sandPosition[1] >= gridVerticalBounds[1]
       || sandPosition[0] === gridHorizontalBounds[0]
       || sandPosition[0] === gridHorizontalBounds[1])) {
       sandFellIntoTheVoid = true;
-      return;
+      break;
     }
 
     const canMoveDown = grid[sandPosition[1] + 1][sandPosition[0]] === '.';
@@ -137,37 +136,39 @@ const dropGrainOfSand = (grid, part2) => {
 
           if (sandPosition[0] === sandOrigin[0] && sandPosition[1] === sandOrigin[1]) {
             sandFilledUpToOrigin = true;
+            break;
           }
         }
       }
     }
   }
+
+  return { sandFellIntoTheVoid, sandFilledUpToOrigin };
 };
 
-sandFellIntoTheVoid = false;
-sandFilledUpToOrigin = false;
-while (!sandFellIntoTheVoid) {
-  dropGrainOfSand(gridPart1, false);
+let exitLoop = false;
+while (!exitLoop) {
+  const { sandFellIntoTheVoid } = dropGrainOfSand(gridPart1, false);
+  exitLoop = sandFellIntoTheVoid;
 }
 
 console.log('Final grid (part 1):');
 printGrid(gridPart1);
 
-sandFellIntoTheVoid = false;
-sandFilledUpToOrigin = false;
-while (!sandFilledUpToOrigin) {
-  dropGrainOfSand(gridPart2, true);
+exitLoop = false;
+while (!exitLoop) {
+  const { sandFilledUpToOrigin } = dropGrainOfSand(gridPart2, true);
+  exitLoop = sandFilledUpToOrigin;
 }
 
 console.log('Final grid (part 2):');
 printGrid(gridPart2, true);
 
-const totalGrainsOfSandPart1 = gridPart1.reduce((grandTotal, gridLine) => grandTotal + gridLine.filter((symbol) => symbol === 'o').length, 0);
-const totalGrainsOfSandPart2 = gridPart2.reduce((grandTotal, gridLine) => grandTotal + gridLine.filter((symbol) => symbol === 'o').length, 0);
+const countGrainsOfSand = (grid) => grid.reduce((grandTotal, gridLine) => grandTotal + gridLine.filter((symbol) => symbol === 'o').length, 0);
 
 console.log({
   solution: {
-    part1: { totalGrainsOfSandPart1 },
-    part2: { totalGrainsOfSandPart2 },
+    part1: { totalGrainsOfSand: countGrainsOfSand(gridPart1) },
+    part2: { totalGrainsOfSand: countGrainsOfSand(gridPart2) },
   },
 });
