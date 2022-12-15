@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import input from './input';
 
 const inputLines = input.split('\n').filter(Boolean);
@@ -6,6 +7,16 @@ const rockCoordinatePaths = inputLines.map((inputLine) => inputLine.split(' -> '
   .map((c) => c.split(',').map((n) => parseInt(n, 10))));
 
 const sandOrigin = [500, 0];
+
+const clone2dArray = (array) => {
+  const newArray = [];
+
+  for (let i = 0; i < array.length; i += 1) {
+    newArray[i] = array[i].slice();
+  }
+
+  return newArray;
+};
 
 const rockCoordinates = [];
 rockCoordinatePaths.forEach((vertices) => {
@@ -49,42 +60,57 @@ const gridVerticalBounds = [
   Math.max(...distinctVerticalRockCoordinates),
 ];
 
-const grid = Array.from(
+const startingGrid = Array.from(
   { length: gridVerticalBounds[1] + 1 },
-  () => Array.from({ length: gridHorizontalBounds[1] + 1 }, () => '.'),
+  () => Array.from({ length: gridHorizontalBounds[1] + 1 + 500 }, () => '.'),
 );
 
-const printGrid = () => {
-  for (let y = gridVerticalBounds[0]; y <= gridVerticalBounds[1]; y += 1) {
-    console.log(grid[y].slice(gridHorizontalBounds[0], gridHorizontalBounds[1] + 1).join(''));
+const printGrid = (grid, autoFitSand) => {
+  let minX = Infinity; let maxX = -Infinity; let minY = Infinity; let maxY = -Infinity;
+
+  if (autoFitSand) {
+    grid.forEach((gridLine, y) => {
+      gridLine.forEach((symbol, x) => {
+        if (symbol === 'o' || symbol === '+') {
+          if (x < minX) minX = x;
+          if (x > maxX) maxX = x;
+          if (y < minY) minY = y;
+          if (y > maxY) maxY = y;
+        }
+      });
+    });
+  } else {
+    [minX, maxX] = gridHorizontalBounds;
+    [minY, maxY] = gridVerticalBounds;
   }
+
+  grid.slice(minY, maxY + 1).forEach((gridLine) => {
+    console.log(gridLine.slice(minX, maxX + 1).join(''));
+  });
 };
+rockCoordinates.forEach(([rockX, rockY]) => {
+  startingGrid[rockY][rockX] = '#';
+});
 
-console.log('Building starting grid...');
+startingGrid[sandOrigin[1]][sandOrigin[0]] = '+';
 
-for (let y = gridVerticalBounds[0]; y <= gridVerticalBounds[1]; y += 1) {
-  for (let x = gridHorizontalBounds[0]; x <= gridHorizontalBounds[1]; x += 1) {
-    if (rockCoordinates.some(([rockX, rockY]) => x === rockX && y === rockY)) {
-      grid[y][x] = '#';
-    }
-  }
-}
+const gridPart1 = clone2dArray(startingGrid);
+const gridPart2 = clone2dArray(startingGrid);
 
-grid[sandOrigin[1]][sandOrigin[0]] = '+';
+gridPart2.push(Array.from({ length: gridHorizontalBounds[1] + 1 + 500 }, () => '.'));
+gridPart2.push(Array.from({ length: gridHorizontalBounds[1] + 1 + 500 }, () => '#'));
 
-console.log('Starting grid:');
-printGrid();
+let sandFellIntoTheVoid;
+let sandFilledUpToOrigin;
 
-let sandFellIntoTheVoid = false;
-
-const dropGrainOfSand = () => {
+const dropGrainOfSand = (grid, part2) => {
   const sandPosition = [sandOrigin[0], sandOrigin[1]];
   let sandCameToRest = false;
 
-  while (!sandCameToRest && !sandFellIntoTheVoid) {
-    if (sandPosition[1] >= gridVerticalBounds[1]
+  while (!sandCameToRest && !sandFellIntoTheVoid && !sandFilledUpToOrigin) {
+    if (!part2 && (sandPosition[1] >= gridVerticalBounds[1]
       || sandPosition[0] === gridHorizontalBounds[0]
-      || sandPosition[0] === gridHorizontalBounds[1]) {
+      || sandPosition[0] === gridHorizontalBounds[1])) {
       sandFellIntoTheVoid = true;
       return;
     }
@@ -108,21 +134,40 @@ const dropGrainOfSand = () => {
         } else {
           sandCameToRest = true;
           grid[sandPosition[1]][sandPosition[0]] = 'o';
+
+          if (sandPosition[0] === sandOrigin[0] && sandPosition[1] === sandOrigin[1]) {
+            sandFilledUpToOrigin = true;
+          }
         }
       }
     }
   }
 };
 
+sandFellIntoTheVoid = false;
+sandFilledUpToOrigin = false;
 while (!sandFellIntoTheVoid) {
-  dropGrainOfSand();
+  dropGrainOfSand(gridPart1, false);
 }
 
-console.log('Final grid:');
-printGrid();
+console.log('Final grid (part 1):');
+printGrid(gridPart1);
 
-const totalGrainsOfSand = grid.reduce((grandTotal, gridLine) => grandTotal + gridLine.filter((symbol) => symbol === 'o').length, 0);
+sandFellIntoTheVoid = false;
+sandFilledUpToOrigin = false;
+while (!sandFilledUpToOrigin) {
+  dropGrainOfSand(gridPart2, true);
+}
+
+console.log('Final grid (part 2):');
+printGrid(gridPart2, true);
+
+const totalGrainsOfSandPart1 = gridPart1.reduce((grandTotal, gridLine) => grandTotal + gridLine.filter((symbol) => symbol === 'o').length, 0);
+const totalGrainsOfSandPart2 = gridPart2.reduce((grandTotal, gridLine) => grandTotal + gridLine.filter((symbol) => symbol === 'o').length, 0);
 
 console.log({
-  solution: { part1: { totalGrainsOfSand } },
+  solution: {
+    part1: { totalGrainsOfSandPart1 },
+    part2: { totalGrainsOfSandPart2 },
+  },
 });
