@@ -14,5 +14,10 @@ module.exports = {
   rules: {
     'no-console': 'off',
     'no-continue': 'off',
+    'import/prefer-default-export': 'off',
+  },
+  globals: {
+    it: true,
+    expect: true,
   },
 };
