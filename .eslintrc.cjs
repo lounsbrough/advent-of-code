@@ -13,5 +13,6 @@ module.exports = {
   ignorePatterns: ['**/chartData/*.js'],
   rules: {
     'no-console': 'off',
+    'no-continue': 'off',
   },
 };

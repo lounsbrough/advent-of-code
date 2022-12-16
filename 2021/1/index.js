@@ -1,6 +1,6 @@
 import input from './input';
 
-const depthReadings = input.split('\n').filter(Boolean).map((n) => parseInt(n, 10));
+const depthReadings = input.split('\n').filter(Boolean).map(Number);
 
 const windowSize = 3;
 

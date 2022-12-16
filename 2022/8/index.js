@@ -7,7 +7,7 @@ const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
 
 const inputLines = input.split('\n').filter(Boolean);
 
-const grid = inputLines.map((inputLine) => inputLine.split('').map((n) => parseInt(n, 10)));
+const grid = inputLines.map((inputLine) => inputLine.split('').map(Number));
 
 const gridHeight = grid.length;
 const gridWidth = grid[0].length;

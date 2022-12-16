@@ -49,7 +49,7 @@ inputLines.forEach((outputLine) => {
     const isFile = !outputLine.startsWith('dir');
 
     if (isFile) {
-      const fileSize = parseInt(outputLine.split(' ')[0], 10);
+      const fileSize = Number(outputLine.split(' ')[0]);
       addFileSizeToDirectoryTree(fileSize);
     }
   }

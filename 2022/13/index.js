@@ -1,4 +1,3 @@
-/* eslint-disable no-continue */
 import input from './input';
 
 const packetPairs = input.split('\n\n')

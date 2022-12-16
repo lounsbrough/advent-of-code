@@ -4,7 +4,7 @@ import input from './input';
 const inputLines = input.split('\n').filter(Boolean);
 
 const rockCoordinatePaths = inputLines.map((inputLine) => inputLine.split(' -> ')
-  .map((c) => c.split(',').map((n) => parseInt(n, 10))));
+  .map((c) => c.split(',').map(Number)));
 
 const sandOrigin = [500, 0];
 

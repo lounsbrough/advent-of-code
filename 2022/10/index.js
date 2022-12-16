@@ -41,7 +41,7 @@ const runAddX = (n) => {
 inputLines.forEach((inputLine) => {
   const addXMatch = inputLine.match(/addx ([-\d]*)/i);
   if (addXMatch) {
-    runAddX(parseInt(addXMatch[1], 10));
+    runAddX(Number(addXMatch[1]));
   } else {
     runNoop();
   }

@@ -24,13 +24,13 @@ inputLines.forEach((inputLine) => {
     });
   } else if (/starting items:/i.test(inputLine)) {
     const startingItems = inputLine.match(/starting items: ([\d,\s]+)/i)[1]
-      .split(', ').map((n) => parseInt(n, 10));
+      .split(', ').map(Number);
     inputMonkeys.at(-1).items = startingItems;
   } else if (/operation:/i.test(inputLine)) {
     const equation = inputLine.match(/operation: new = (.*)/i)[1];
     inputMonkeys.at(-1).operation = (old) => operationStringToFunction(equation, old);
   } else if (/test: divisible by/i.test(inputLine)) {
-    const divisor = parseInt(inputLine.match(/test: divisible by (\d+)/i)[1], 10);
+    const divisor = Number(inputLine.match(/test: divisible by (\d+)/i)[1]);
     inputMonkeys.at(-1).testDivisor = divisor;
   } else if (/throw to monkey/i.test(inputLine)) {
     const [, testOutcome, monkeyNumber] = inputLine.match(/if (true|false): throw to monkey (\d+)/i);
@@ -38,9 +38,8 @@ inputLines.forEach((inputLine) => {
   }
 });
 
-const leastCommonDivisor = parseInt(
+const leastCommonDivisor = Number(
   inputMonkeys.map((monkey) => monkey.testDivisor).reduce((a, b) => a * b, 1),
-  10,
 );
 
 const processMonkeyTurn = (index, puzzlePart) => {

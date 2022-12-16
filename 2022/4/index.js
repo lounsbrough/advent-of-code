@@ -4,7 +4,7 @@ const inputLines = input.split('\n').filter(Boolean);
 
 const assignmentPairs = inputLines
   .map((inputLine) => inputLine.split(',')
-    .map((assignmentPair) => assignmentPair.split('-').map((n) => parseInt(n, 10))));
+    .map((assignmentPair) => assignmentPair.split('-').map(Number)));
 
 const isInRange = (x, [min, max]) => x >= min && x <= max;
 

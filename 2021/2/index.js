@@ -8,7 +8,7 @@ let currentAim = 0;
 const commands = input.split('\n').filter(Boolean)
   .map((inputLine) => {
     const regexMatch = inputLine.match(/([^\s]*) (\d*)/);
-    return ({ direction: regexMatch[1], distance: parseInt(regexMatch[2], 10) });
+    return ({ direction: regexMatch[1], distance: Number(regexMatch[2]) });
   });
 
 commands.forEach(({ direction, distance }) => {

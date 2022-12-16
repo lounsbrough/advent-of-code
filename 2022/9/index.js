@@ -5,7 +5,7 @@ const inputLines = input.split('\n').filter(Boolean);
 const headMovements = inputLines.map((inputLine) => {
   const movement = inputLine.split(' ');
 
-  return [movement[0], parseInt(movement[1], 10)];
+  return [movement[0], Number(movement[1])];
 });
 
 const knotCount = 10;

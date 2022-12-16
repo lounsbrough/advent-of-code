@@ -1,9 +1,9 @@
 import input from './input';
 
 const binaryNumberLines = input.split('\n').filter(Boolean)
-  .map((inputLine) => inputLine.split('').map((n) => parseInt(n, 10)));
+  .map((inputLine) => inputLine.split('').map(Number));
 
-const getDecimalFromBits = (bits) => parseInt(bits.join(''), 2);
+const getDecimalFromBits = (bits) => Number(bits.join(''));
 
 const getCommonBits = (bitArrays, index) => {
   const indexBits = bitArrays.map((bitArray) => bitArray[index]);
