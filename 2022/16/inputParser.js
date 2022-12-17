@@ -5,5 +5,6 @@ export const parseInput = (input) => input.split('\n').filter(Boolean).map((inpu
     value: matches[1],
     flowRate: Number(matches[2]),
     reachableValves: matches[3].split(', '),
+    opened: false,
   };
 });

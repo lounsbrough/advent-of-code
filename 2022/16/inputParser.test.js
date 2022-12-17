@@ -13,7 +13,7 @@ it('should parse vavles correctly from input', () => {
     { value: 'HH', flowRate: 22, reachableValves: ['GG'] },
     { value: 'II', flowRate: 0, reachableValves: ['AA', 'JJ'] },
     { value: 'JJ', flowRate: 21, reachableValves: ['II'] },
-  ];
+  ].map((expectedValve) => ({ ...expectedValve, opened: false }));
 
   expect(parseInput(input)).toEqual(expectedValves);
 });

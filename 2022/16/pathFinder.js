@@ -32,3 +32,38 @@ export const findShortestPaths = (valves, start, end) => {
     ...allPaths.map(({ length }) => length),
   ));
 };
+
+export const findNextTarget = (valves, start, minutesRemaining) => {
+  const valvePotentialFlows = valves.map((valve) => {
+    if (valve.opened) {
+      return null;
+    }
+
+    const shortestPath = findShortestPaths(valves, start, valve.value)[0];
+
+    if (!shortestPath) {
+      return null;
+    }
+
+    const minutesToTravel = shortestPath.length - 1;
+    const minuteToOpenValve = 1;
+
+    const potentialFlow = (minutesRemaining - minutesToTravel - minuteToOpenValve) * valve.flowRate;
+
+    if (!potentialFlow) {
+      return null;
+    }
+
+    return ({
+      ...valve,
+      potentialFlow,
+      shortestPath,
+    });
+  }).filter(Boolean);
+
+  if (!valvePotentialFlows.length) {
+    return null;
+  }
+
+  return valvePotentialFlows.sort((a, b) => b.potentialFlow - a.potentialFlow)[0];
+};
