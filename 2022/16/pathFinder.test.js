@@ -1,4 +1,4 @@
-import { findAllPaths, findShortestPaths } from './pathFinder';
+import { findAllPaths, findNextTarget, findShortestPaths } from './pathFinder';
 import input from './demo';
 import { parseInput } from './inputParser';
 
@@ -15,4 +15,21 @@ it('should find shortest path from EE to BB', () => {
     ['EE', 'DD', 'CC', 'BB'],
     ['EE', 'DD', 'AA', 'BB'],
   ]);
+});
+
+it('should find shortest path from AA to JJ', () => {
+  expect(findShortestPaths(valves, 'AA', 'JJ')).toEqual([
+    ['AA', 'II', 'JJ'],
+  ]);
+});
+
+it('should find next target based on maximum potential flow', () => {
+  expect(findNextTarget(valves, 'AA', 30)).toEqual({
+    value: 'DD',
+    flowRate: 20,
+    reachableValves: ['CC', 'AA', 'EE'],
+    opened: false,
+    potentialFlow: 560,
+    shortestPath: ['AA', 'DD'],
+  });
 });

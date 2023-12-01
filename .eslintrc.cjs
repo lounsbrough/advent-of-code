@@ -14,6 +14,7 @@ module.exports = {
   rules: {
     'no-console': 'off',
     'no-continue': 'off',
+    'no-loop-func': 'off',
     'import/prefer-default-export': 'off',
   },
   globals: {
