@@ -2,7 +2,7 @@ import input from "./input.js";
 
 const inputLines = input.split('\n').filter(Boolean);
 
-const parsedLines = inputLines.map((line) => {
+const linesOfNumbers = inputLines.map((line) => {
     const matches = line.matchAll(/(\d+)/gm);
 
     return [...matches].map((match) => ({
@@ -12,8 +12,8 @@ const parsedLines = inputLines.map((line) => {
     }));
 });
 
-let sum = 0;
-parsedLines.forEach((parsedLine, lineIndex) => {
+let part1 = 0;
+linesOfNumbers.forEach((parsedLine, lineIndex) => {
     parsedLine.forEach(({index, digitCount, number}) => {
         const leftBoundary = index - 1;
         const rightBoundary = index + digitCount;
@@ -30,9 +30,35 @@ parsedLines.forEach((parsedLine, lineIndex) => {
         }
 
         if (touchingSymbol) {
-            sum += number;
+            part1 += number;
         }
     });
 });
 
-console.log(sum);
+let part2 = 0;
+inputLines.forEach((inputLines, lineIndex) => {
+    const matches = inputLines.matchAll(/(\*{1})/gm);
+
+    [...matches].forEach((match) => {
+        const leftIndex = match['index'] - 1;
+        const rightIndex = match['index'] + 1;
+        const touchingNumbers = [
+            ...linesOfNumbers[lineIndex - 1],
+            ...linesOfNumbers[lineIndex],
+            ...linesOfNumbers[lineIndex + 1]
+        ].filter(({index, digitCount}) =>
+            (index >= leftIndex && index <= rightIndex)
+            || (index + digitCount - 1 >= leftIndex && index + digitCount - 1 <= rightIndex))
+
+        if (touchingNumbers.length === 2) {
+            part2 += touchingNumbers[0].number * touchingNumbers[1].number
+        }
+    });
+});
+
+console.log({
+    soution: {
+        part1,
+        part2
+    }
+});
