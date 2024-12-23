@@ -32,10 +32,10 @@ const countTrails = (position, n, foundPeaks) => {
     return 1;
   }
 
-  return countTrails([position[0] - 1, position[1]], n + 1, foundPeaks)
-    + countTrails([position[0], position[1] + 1], n + 1, foundPeaks)
-    + countTrails([position[0] + 1, position[1]], n + 1, foundPeaks)
-    + countTrails([position[0], position[1] - 1], n + 1, foundPeaks);
+  return [[1, 0], [-1, 0], [0, 1], [0, -1]].reduce((agg, direction) => agg + countTrails([
+    position[0] + direction[0],
+    position[1] + direction[1],
+  ], n + 1, foundPeaks), 0);
 };
 
 const part1 = trailheads.reduce((agg, trailhead) => agg + countTrails(trailhead, 0, new Set()), 0);
