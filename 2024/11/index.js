@@ -4,33 +4,48 @@ const inputLines = input.split('\n').filter(Boolean);
 
 const originalStones = inputLines.flatMap((inputLine) => inputLine.split(' ').map(Number));
 
-const stonesPart1 = [...originalStones];
-const blink = () => {
-  let i = 0;
-  while (i < stonesPart1.length) {
-    const stone = stonesPart1[i];
-    if (stone === 0) {
-      stonesPart1[i] = 1;
-    } else if (stone.toString().length % 2 === 0) {
-      const digitString = stone.toString();
-      const half = digitString.length / 2;
-      stonesPart1[i] = Number(digitString.substring(0, half));
-      stonesPart1.splice(
-        i,
-        0,
-        Number(digitString.substring(half)),
-      );
-      i += 1;
-    } else {
-      stonesPart1[i] = stone * 2024;
-    }
-
-    i += 1;
+const stoneCounts = {};
+originalStones.forEach((stone) => {
+  if (!stoneCounts[stone]) {
+    stoneCounts[stone] = 0;
   }
+  stoneCounts[stone] += 1;
+});
+
+const getNewStones = (stone) => {
+  if (stone === 0) {
+    return [1];
+  }
+
+  if (stone.toString().length % 2 === 0) {
+    const digitString = stone.toString();
+    const half = digitString.length / 2;
+    return [Number(digitString.substring(0, half)), Number(digitString.substring(half))];
+  }
+
+  return [stone * 2024];
+};
+
+const blink = () => {
+  Object.entries({ ...stoneCounts }).forEach(([stone, count]) => {
+    stoneCounts[stone] -= count;
+    getNewStones(Number(stone)).forEach((newStone) => {
+      if (!stoneCounts[newStone]) {
+        stoneCounts[newStone] = 0;
+      }
+      stoneCounts[newStone] += count;
+    });
+  });
 };
 
 for (let i = 1; i <= 25; i += 1) {
   blink();
 }
+const part1 = Object.values(stoneCounts).reduce((agg, cur) => agg + cur, 0);
 
-console.log({ solution: { part1: stonesPart1.length, part2: '?' } });
+for (let i = 1; i <= 50; i += 1) {
+  blink();
+}
+const part2 = Object.values(stoneCounts).reduce((agg, cur) => agg + cur, 0);
+
+console.log({ solution: { part1, part2 } });
