@@ -1,5 +1,5 @@
 /* eslint-disable prefer-destructuring */
-import input from './input.js';
+import input from './demo.js';
 
 const grid = input.split('\n').filter(Boolean).map((line) => line.split(''));
 
@@ -41,8 +41,9 @@ grid.forEach((row, rowI) => {
 });
 
 const bestScoreToPosition = {};
+const completedPaths = [];
 
-const findMinScorePath = (position, heading, score) => {
+const findMinScorePath = (position, heading, score, path) => {
   const nextScores = [];
   const delta = deltaMap[heading];
   const forwardStep = [position[0] + delta[0], position[1] + delta[1]];
@@ -54,6 +55,7 @@ const findMinScorePath = (position, heading, score) => {
   bestScoreToPosition[positionKey] = score;
 
   if (grid[position[0]][position[1]] === 'E') {
+    completedPaths.push({ score, path });
     return score;
   }
 
@@ -62,6 +64,7 @@ const findMinScorePath = (position, heading, score) => {
       forwardStep,
       heading,
       score + 1,
+      [...path, forwardStep.join(',')],
     ));
   }
 
@@ -74,6 +77,7 @@ const findMinScorePath = (position, heading, score) => {
         nextHeadingStep,
         nextHeading,
         score + 1001,
+        [...path, nextHeadingStep.join(',')],
       ));
     }
   });
@@ -85,6 +89,18 @@ const findMinScorePath = (position, heading, score) => {
   return Math.min(...nextScores);
 };
 
-const part1 = findMinScorePath(startingPosition, direction.right, 0);
+const part1 = findMinScorePath(startingPosition, direction.right, 0, []);
 
-console.log({ solution: { part1, part2: '?' } });
+const shortestPaths = completedPaths.filter(({ score }) => score === part1);
+
+console.log(completedPaths.length);
+console.log(shortestPaths);
+
+const pointsOnShortestPaths = new Set();
+shortestPaths.forEach(({ path }) => {
+  path.forEach(pointsOnShortestPaths.add, pointsOnShortestPaths);
+});
+
+const part2 = pointsOnShortestPaths.size;
+
+console.log({ solution: { part1, part2 } });
