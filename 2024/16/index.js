@@ -1,11 +1,13 @@
-/* eslint-disable prefer-destructuring */
-import input from './demo.js';
+import input from './input.js';
 
 const grid = input.split('\n').filter(Boolean).map((line) => line.split(''));
 
 const direction = {
   up: 'up', right: 'right', down: 'down', left: 'left',
 };
+
+const stepCost = 1;
+const turnCost = 1000;
 
 const deltaMap = {
   [direction.up]: [-1, 0],
@@ -15,22 +17,10 @@ const deltaMap = {
 };
 
 const nextHeadingsMap = {
-  [direction.up]: {
-    clockwise: direction.right,
-    counterClockwise: direction.left,
-  },
-  [direction.right]: {
-    clockwise: direction.down,
-    counterClockwise: direction.up,
-  },
-  [direction.down]: {
-    clockwise: direction.left,
-    counterClockwise: direction.right,
-  },
-  [direction.left]: {
-    clockwise: direction.up,
-    counterClockwise: direction.down,
-  },
+  [direction.up]: [direction.right, direction.left],
+  [direction.right]: [direction.down, direction.up],
+  [direction.down]: [direction.left, direction.right],
+  [direction.left]: [direction.up, direction.down],
 };
 
 let startingPosition;
@@ -52,7 +42,7 @@ const findMinScorePath = (position, heading, score, path) => {
   if (bestScoreToPosition[positionKey] && bestScoreToPosition[positionKey] < score) {
     return Infinity;
   }
-  bestScoreToPosition[positionKey] = score;
+  bestScoreToPosition[positionKey] = score + turnCost;
 
   if (grid[position[0]][position[1]] === 'E') {
     completedPaths.push({ score, path });
@@ -63,20 +53,20 @@ const findMinScorePath = (position, heading, score, path) => {
     nextScores.push(findMinScorePath(
       forwardStep,
       heading,
-      score + 1,
+      score + stepCost,
       [...path, forwardStep.join(',')],
     ));
   }
 
-  const { clockwise, counterClockwise } = nextHeadingsMap[heading];
-  [clockwise, counterClockwise].forEach((nextHeading) => {
+  nextHeadingsMap[heading].forEach((nextHeading) => {
     const nextHeadingDelta = deltaMap[nextHeading];
     const nextHeadingStep = [position[0] + nextHeadingDelta[0], position[1] + nextHeadingDelta[1]];
+
     if (grid[nextHeadingStep[0]][nextHeadingStep[1]] !== '#') {
       nextScores.push(findMinScorePath(
         nextHeadingStep,
         nextHeading,
-        score + 1001,
+        score + turnCost + stepCost,
         [...path, nextHeadingStep.join(',')],
       ));
     }
@@ -89,13 +79,9 @@ const findMinScorePath = (position, heading, score, path) => {
   return Math.min(...nextScores);
 };
 
-const part1 = findMinScorePath(startingPosition, direction.right, 0, []);
+const part1 = findMinScorePath(startingPosition, direction.right, 0, [startingPosition.join(',')]);
 
 const shortestPaths = completedPaths.filter(({ score }) => score === part1);
-
-console.log(completedPaths.length);
-console.log(shortestPaths);
-
 const pointsOnShortestPaths = new Set();
 shortestPaths.forEach(({ path }) => {
   path.forEach(pointsOnShortestPaths.add, pointsOnShortestPaths);
