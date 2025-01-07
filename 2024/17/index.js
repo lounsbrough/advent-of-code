@@ -61,17 +61,36 @@ const runProgram = (registerA, registerB, registerC) => {
     }
   }
 
-  return outputs.join(',');
+  return outputs;
 };
 
-const part1 = runProgram(registers[0], registers[1], registers[2]);
+const part1 = runProgram(registers[0], registers[1], registers[2]).join(',');
 
 const expectedOutput = program.join(',');
-let currentA = 0n;
-while (runProgram(currentA, registers[1], registers[2]) !== expectedOutput) {
-  currentA += 1n;
+function findRegisterA(current, tail) {
+  for (let modSize = 0n; modSize < 8n; modSize += 1n) {
+    const next = current * 8n + modSize;
+
+    const outputs = runProgram(next, registers[1], registers[2]);
+
+    if (program.at(-tail) !== outputs.at(-tail)) {
+      continue;
+    }
+
+    if (expectedOutput === outputs.join(',')) {
+      return next;
+    }
+
+    const final = findRegisterA(next, tail + 1);
+
+    if (final !== 0) {
+      return final;
+    }
+  }
+
+  return 0;
 }
 
-const part2 = currentA;
+const part2 = findRegisterA(0n, 1);
 
 console.log({ solution: { part1, part2 } });
