@@ -5,13 +5,16 @@ const initialByteCount = 1024;
 
 const bytes = input.split('\n').filter(Boolean).map((line) => line.split(',').map(Number));
 
-const grid = Array.from({ length: gridSize }, () => Array.from({ length: gridSize }, () => '.'));
-bytes.slice(0, initialByteCount).forEach((byte) => {
-  grid[byte[1]][byte[0]] = '#';
-});
+const createGrid = (byteCount) => {
+  const grid = Array.from({ length: gridSize }, () => Array.from({ length: gridSize }, () => '.'));
+  bytes.slice(0, byteCount).forEach((byte) => {
+    grid[byte[1]][byte[0]] = '#';
+  });
+  return grid;
+};
 
 let minStepsToPosition = {};
-const findMinStepsToEnd = (position, steps) => {
+const findMinStepsToEnd = (grid, position, steps) => {
   const positionKey = position.join(',');
   if (steps >= minStepsToPosition[positionKey]) {
     return Infinity;
@@ -31,22 +34,28 @@ const findMinStepsToEnd = (position, steps) => {
       return Infinity;
     }
 
-    return findMinStepsToEnd(nextPosition, steps + 1);
+    return findMinStepsToEnd(grid, nextPosition, steps + 1);
   }));
 };
 
-const part1 = findMinStepsToEnd([0, 0], 0);
-
-let closingByte = initialByteCount - 1;
-let closed = false;
-while (!closed) {
-  closingByte += 1;
-  const nextByte = bytes[closingByte];
-  grid[nextByte[1]][nextByte[0]] = '#';
+const findMinSteps = (byteCount) => {
   minStepsToPosition = {};
-  closed = (findMinStepsToEnd([0, 0], 0) === Infinity);
+  return findMinStepsToEnd(createGrid(byteCount), [0, 0], 0);
+};
+
+const part1 = findMinSteps(initialByteCount);
+
+let left = initialByteCount;
+let right = bytes.length;
+while (right > left + 1) {
+  const next = left + Math.floor((right - left) / 2);
+  if (findMinSteps(next) === Infinity) {
+    right = next;
+  } else {
+    left = next;
+  }
 }
 
-const part2 = bytes[closingByte];
+const part2 = bytes[right - 1];
 
 console.log({ solution: { part1, part2 } });
